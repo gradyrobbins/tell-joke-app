@@ -47,7 +47,8 @@ class Joke extends Component {
       this.state = {
          jokeLoaded: false,
          objResult: {},
-         showResult: false
+         showResult: false,
+         error: null
       }
       //without this binding, showClicked calling this.setState is not avaialble
       this.showClicked = this.showClicked.bind(this);
@@ -67,7 +68,8 @@ class Joke extends Component {
       this.setState({
          jokeLoaded: false,
          objResult: {},
-         showResult: false
+         showResult: false,
+         error: null
       }, this.getJoke());
       //ensure state is updated before calling a new joke
    }
@@ -116,7 +118,7 @@ class Joke extends Component {
          return (
             <div>
                <div>Error: {error.message}</div>
-               {/* <button onClick={this.callJoke}>Try Again</button> */}
+               <button onClick={this.getAnotherClicked}>Try Again</button>
             </div>
          );
       } else if (!jokeLoaded) {
