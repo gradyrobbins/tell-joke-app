@@ -1,6 +1,13 @@
+# Tell Me a Joke
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
+Version 1
+* Call random joke api.
+* Display setup with button to show punchline
+* Show punchline with capability to show another
 
+## See other branches for more versions
 
 ## Available Scripts
 
