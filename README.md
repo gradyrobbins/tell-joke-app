@@ -1,8 +1,6 @@
 # Tell Me a Joke
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
-
-Version 1
+**Version 1**
 * Call random joke api.
 * Display setup with button to show punchline
 * Show punchline with capability to show another
@@ -17,7 +15,8 @@ Version 1
 
 
 
-## Available Scripts
+## Notes for Students
+### Available Scripts
 
 In the project directory, you can run:
 
@@ -49,13 +48,13 @@ See the section about [deployment](#deployment) for more information.
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
 
-## Debugging in the Editor
+### Debugging in the Editor
 
 **This feature is currently only supported by [Visual Studio Code](https://code.visualstudio.com) and [WebStorm](https://www.jetbrains.com/webstorm/).**
 
 Visual Studio Code and WebStorm support debugging out of the box with Create React App. This enables you as a developer to write and debug your React code without leaving the editor, and most importantly it enables you to have a continuous development workflow, where context switching is minimal, as you don’t have to switch between tools.
 
-### Visual Studio Code
+#### Visual Studio Code
 
 You would need to have the latest version of [VS Code](https://code.visualstudio.com) and VS Code [Chrome Debugger Extension](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome) installed.
 
