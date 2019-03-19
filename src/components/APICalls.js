@@ -3,7 +3,15 @@ export default Object.create(null, {
 
    getJoke: {
       value: ()=> {
-         return fetch("https://08ad1pao69.execute-api.us-east-1.amazonaws.com/dev/random_joke")
+          return fetch("https://official-joke-api.appspot.com/random_joke",
+            {
+                method: "GET",
+                "crossDomain": true,
+                headers: {
+                    "mode": "no-cors",
+                    "cache-control": "no-cache",
+                }
+            })
             .then(res => res.json())
             .then((result) => {
                return result;
@@ -17,6 +25,9 @@ export default Object.create(null, {
          }
       }
    });
+
+
+
 
 // export default function getJoke(){
 //    return fetch("https://08ad1pao69.execute-api.us-east-1.amazonaws.com/dev/random_joke")
