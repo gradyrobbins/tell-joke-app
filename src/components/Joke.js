@@ -1,97 +1,101 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Punchline from './Punchline';
-import APICalls from './APICalls';
-import JokeSetup from './JokeSetup';
+import { getJoke } from './APICalls';
+import { JokeSetup } from './JokeSetup';
 
 
 
-class Joke extends Component {
-   state = {
-         jokeLoaded: false,
-         jokeResult: {},
-         showResult: false,
-         error: null
-      }
+export function Joke() {
+  const [jokeLoaded, setJokeLoaded] = useState(false);
+  const [jokeResult, setJokeResult] = useState({});
+  const [showResult, setShowResult] = useState(false);
+  const [error, setError] = useState(null);
 
-   showClicked = () => {
-      console.log("clicked on show")
-      this.setState({
-         showResult: true
-      });
-   }
+  // state = {
+  //   jokeLoaded: false,
+  //   jokeResult: {},
+  //   showResult: false,
+  //   error: null
+  // }
 
-   getAnotherClicked = () => {
-      console.log("getAnotherClicked");
-      this.setState({
-         jokeLoaded: false,
-         jokeResult: {},
-         showResult: false,
-         error: null
-      }, this.loadAnother);
-      //ensure state is updated before calling a new joke
-   }
+  const showClicked = () => {
+    console.log("clicked on show")
+    setShowResult(true);
+  }
 
-   loadAnother = () => {
-      APICalls.getJoke()
-         .then((joke) => {
-            this.setState({
-               jokeLoaded: true,
-               jokeResult: joke,
-         })
-      })
-   }
-   componentDidMount = () => {
-      //lifecycle hook
-      console.log("componentDidMount");
-      APICalls.getJoke()
+  const getAnotherClicked = () => {
+    console.log("getAnotherClicked");
+    setJokeLoaded(false);
+    setJokeResult({});
+    setShowResult(false);
+    setError(null)
+    loadAnother();
+  }
+
+  // this.setState({
+  //   jokeLoaded: false,
+  //   jokeResult: {},
+  //   showResult: false,
+  //   error: null
+  // }, this.loadAnother);
+  //ensure state is updated before calling a new joke
+
+  const loadAnother = () => {
+    getJoke()
       .then((joke) => {
-         this.setState({
-            jokeLoaded: true,
-            jokeResult: joke,
-         })
+        setJokeResult(joke);
+        setJokeLoaded(true);
       })
-   }
+  }
+
+  const showView = () => {
+    console.log("jokeLoaded", jokeLoaded)
+    if (error) {
+      return (
+        <div>
+          <div>Error: {error.message}</div>
+          <button onClick={getAnotherClicked}>Try Again</button>
+        </div>
+      );
+    } else if (!jokeLoaded) {
+      return <div>Loading...</div>;
+    } else {
+      console.log("jokeresult", jokeResult)
+      return (
+        <div className="box-container">
+
+          <JokeSetup jokeLoaded={jokeLoaded}
+            setup={jokeResult.setup}
+            jokeType={jokeResult.type}
+            showResult={showResult}
+            showClicked={showClicked} />
+          <Punchline
+            showResult={showResult}
+            punch={jokeResult.punchline}
+            getAnotherClicked={getAnotherClicked} />
+        </div>
+      )
+    }
+  }
+
+  useEffect(() => {
+    loadAnother()
+
+  }, []);
 
 
 
+  // flow notes
+  // component load and should show "loading"
+  // then call to get joke
+  // handle the error also
+  // when joke shows up, display JokeSetup with tellme button
+  // click on tellme, tellme should go away and
+  // punchline should show along with "get new joke"
 
-   // flow notes
-   // component load and should show "loading"
-   // then call to get joke
-   // handle the error also
-   // when joke shows up, display JokeSetup with tellme button
-   // click on tellme, tellme should go away and
-   // punchline should show along with "get new joke"
-
-   //render called each time state changes
-   render () {
-      console.log("render!");
-      const { error, jokeLoaded, jokeResult, showResult } = this.state;
-      if (error) {
-         return (
-            <div>
-               <div>Error: {error.message}</div>
-               <button onClick={this.getAnotherClicked}>Try Again</button>
-            </div>
-         );
-      } else if (!jokeLoaded) {
-         return <div>Loading...</div>;
-      } else {
-         return (
-            <div className="box-container">
-               <JokeSetup jokeLoaded={jokeLoaded}
-                  jokeSetup={jokeResult.setup}
-                  jokeType={jokeResult.type}
-                  showResult={showResult}
-                  showClicked={this.showClicked}/>
-               <Punchline
-                  showResult={showResult}
-                  punch={jokeResult.punchline}
-                  getAnotherClicked={this.getAnotherClicked} />
-            </div>
-         )
-      }
-   };
+  return (
+    <>
+      {showView()}
+    </>
+  )
 }
-
-export default Joke;
