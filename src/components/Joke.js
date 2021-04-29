@@ -1,97 +1,85 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Punchline from './Punchline';
-import APICalls from './APICalls';
-import JokeSetup from './JokeSetup';
+import { getJoke } from './APICalls';
+import { JokeSetup } from './JokeSetup';
+import { Button } from 'reactstrap'
+
+export function Joke() {
+  const [jokeLoaded, setJokeLoaded] = useState(false);
+  const [theJoke, setTheJoke] = useState({});
+  const [showPunchline, setShowPunchline] = useState(false);
+  const [error, setError] = useState(null);
+
+  // flow notes
+  // component load and should show "loading"
+  // then call to get joke
+  // handle the error also
+  // when joke shows up, display JokeSetup with tellme button
+  // click on tellme, tellme should go away and
+  // punchline should show along with "get new joke"
+
+  const handlePunchline = () => {
+    setShowPunchline(true);
+  }
+
+  const handleGetAnother = () => {
+    setJokeLoaded(false);
+    setTheJoke({});
+    setShowPunchline(false);
+    setError(null)
+    loadAnother();
+  }
 
 
-
-class Joke extends Component {
-   state = {
-         jokeLoaded: false,
-         jokeResult: {},
-         showResult: false,
-         error: null
-      }
-
-   showClicked = () => {
-      console.log("clicked on show")
-      this.setState({
-         showResult: true
-      });
-   }
-
-   getAnotherClicked = () => {
-      console.log("getAnotherClicked");
-      this.setState({
-         jokeLoaded: false,
-         jokeResult: {},
-         showResult: false,
-         error: null
-      }, this.loadAnother);
-      //ensure state is updated before calling a new joke
-   }
-
-   loadAnother = () => {
-      APICalls.getJoke()
-         .then((joke) => {
-            this.setState({
-               jokeLoaded: true,
-               jokeResult: joke,
-         })
+  const loadAnother = () => {
+    getJoke()
+      .then(response => {
+        setTheJoke(response);
+        setJokeLoaded(true);
       })
-   }
-   componentDidMount = () => {
-      //lifecycle hook
-      console.log("componentDidMount");
-      APICalls.getJoke()
-      .then((joke) => {
-         this.setState({
-            jokeLoaded: true,
-            jokeResult: joke,
-         })
+      .catch((error) => {
+        // console.error("Error fetching data: ", error);
+        setError(error);
       })
-   }
+  }
+
+  const showView = () => {
+    if (error) {
+      return (
+        <div>
+          <div>Error: {error.message}</div>
+          <Button color="info" onClick={handleGetAnother}>Try Again</Button>
+        </div>
+      );
+    } else if (!jokeLoaded) {
+      return <div>Loading...</div>;
+    } else {
+      return (
+        <div className="box-container">
+          <JokeSetup jokeLoaded={jokeLoaded}
+            setup={theJoke.setup}
+            jokeType={theJoke.type}
+            showPunchline={showPunchline}
+            handlePunchline={handlePunchline} />
+          {showPunchline &&
+            <Punchline
+              showPunchline={showPunchline}
+              punchline={theJoke.punchline}
+              handleGetAnother={handleGetAnother} />
+          }
+        </div>
+      )
+    }
+  }
+
+  useEffect(() => {
+    loadAnother()
+  }, []);
 
 
-
-
-   // flow notes
-   // component load and should show "loading"
-   // then call to get joke
-   // handle the error also
-   // when joke shows up, display JokeSetup with tellme button
-   // click on tellme, tellme should go away and
-   // punchline should show along with "get new joke"
-
-   //render called each time state changes
-   render () {
-      console.log("render!");
-      const { error, jokeLoaded, jokeResult, showResult } = this.state;
-      if (error) {
-         return (
-            <div>
-               <div>Error: {error.message}</div>
-               <button onClick={this.getAnotherClicked}>Try Again</button>
-            </div>
-         );
-      } else if (!jokeLoaded) {
-         return <div>Loading...</div>;
-      } else {
-         return (
-            <div className="box-container">
-               <JokeSetup jokeLoaded={jokeLoaded}
-                  jokeSetup={jokeResult.setup}
-                  jokeType={jokeResult.type}
-                  showResult={showResult}
-                  showClicked={this.showClicked}/>
-               <Punchline
-                  showResult={showResult}
-                  punch={jokeResult.punchline}
-                  getAnotherClicked={this.getAnotherClicked} />
-            </div>
-         )
-      }
-   };
+  return (
+    <>
+      {showView()}
+    </>
+  )
 }
-
-export default Joke;
