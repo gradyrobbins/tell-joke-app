@@ -3,12 +3,12 @@ import { Button } from 'reactstrap';
 
 //functional component
 // JS function that accepts props and returns something
-export default function Punchline({ punch, getAnotherClicked, showResult }) {
-  if (showResult) {
+export default function Punchline({ punchline, handleGetAnother, showPunchline }) {
+  if (showPunchline) {
     return (
       <div>
-        <h5>{punch} HA! HA! HA!</h5>
-        <Button color="secondary" onClick={getAnotherClicked}>Show Another</Button>
+        <h5>{punchline} HA! HA! HA!</h5>
+        <Button color="secondary" onClick={handleGetAnother}>Show Another</Button>
       </div>
     )
   } else {
