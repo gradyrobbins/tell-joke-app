@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "is-svg": "^4.2.2",
+    "is-svg": "^4.3.0",
     "merge": "^2.1.1",
     "react": "^16.4.2",
     "react-dev-utils": "^11.0.4",
